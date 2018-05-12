@@ -210,25 +210,26 @@ class enemies2 (Enemys):
         self.objetivo_x=0
         self.objetivo_y=0
         self.salud=100
+        self.vel_y=-2
     def update (self):
         if self.is_atacking:
             if self.coldownWeb>0:
                 self.coldownWeb-=1
-            if self.vel_x>0:
-                self.action=2
-            if self.vel_x<0:
-                self.action=1
-            if self.vel_y<0:
-                self.action=3
-            if self.vel_y>0:
-                self.action=0
-            if self.move <3:
-                self.move+=1
-            else :
-                self.move=0
-            self.rect.x+=self.vel_x
-            self.rect.y+=self.vel_y
-            self.image=self.m[self.action][self.move]
+        if self.vel_x>0:
+            self.action=2
+        if self.vel_x<0:
+            self.action=1
+        if self.vel_y<0:
+            self.action=3
+        if self.vel_y>0:
+            self.action=0
+        if self.move <3:
+            self.move+=1
+        else :
+            self.move=0
+        self.rect.x+=self.vel_x
+        self.rect.y+=self.vel_y
+        self.image=self.m[self.action][self.move]
 
 class Miniboss(Enemys):
     def __init__(self,m,x,y):
@@ -626,9 +627,9 @@ def main ():
             Col_E_W=pygame.sprite.spritecollide(e,walls,False)
             for m in Col_E_W:
                 if  e.vel_y < 0 and e.rect.top < m.rect.bottom:
-                    e.vel_y=1
+                    e.vel_y=2
                 elif e.vel_y > 0 and e.rect.bottom > m.rect.top:
-                    e.vel_y=-1
+                    e.vel_y=-2
         #balas de enemigos y jugadores
         for P in players:
             Col_P_E=pygame.sprite.spritecollide(P,bullets_enemies2,True)
@@ -652,13 +653,9 @@ def main ():
         for a in All_enemies:
             if a.is_atacking:
                 player1.combat=True
-            else :
-                player1.combat=False
-                player2.combat=False
         for a in All_enemies2:
             if a.is_atacking:
                 player1.combat=True
-                player2.combat=False
         #movimiento de la pantalla
         if not player1.combat or not  player2.combat:
             if player2.rect.x > SIZE_SCREEN[0] and player1.rect.x >SIZE_SCREEN[0] :
@@ -784,8 +781,12 @@ def main ():
         for e in All_enemies:
             if functions.Range_enemy(e.rect.x,e.rect.y,player2.rect.x,player2.rect.y,100):
                 e.is_atacking=True
-        for e in All_enemies:
-            if e.is_atacking:
+                e.objetive=2
+            if functions.Range_enemy(e.rect.x,e.rect.y,player1.rect.x,player1.rect.y,100):
+                e.is_atacking=True
+                e.objetive=1
+        for e in All_enemies :
+            if e.is_atacking and e.objetive==2:
                 if player2.rect.x < e.rect.x :
                     e.vel_x=-1
                 if player2.rect.x > e.rect.x:
@@ -793,6 +794,15 @@ def main ():
                 if player2.rect.y < e.rect.y:
                     e.vel_y=-1
                 if player2.rect.y > e.rect.y:
+                    e.vel_y=1
+            if e.is_atacking and e.objetive==1:
+                if player1.rect.x < e.rect.x :
+                    e.vel_x=-1
+                if player1.rect.x > e.rect.x:
+                    e.vel_x=1
+                if player1.rect.y < e.rect.y:
+                    e.vel_y=-1
+                if player1.rect.y > e.rect.y:
                     e.vel_y=1
         for a in All_Bosses:
             if functions.Range_enemy(a.rect.x,a.rect.y,player1.rect.x,player1.rect.y,100):
@@ -813,15 +823,28 @@ def main ():
                     BulletsSpider.remove(B)
                     all_elements.remove(B)
         for a in All_enemies2:
-            if functions.Range_enemy(a.rect.x,a.rect.y,player1.rect.x,player1.rect.y,20):
+            if functions.Range_enemy(a.rect.x,a.rect.y,player1.rect.x,player1.rect.y,100):
                 a.is_atacking=True
+                a.objetive=1
+            if functions.Range_enemy(a.rect.x,a.rect.y,player2.rect.x,player2.rect.y,100):
+                a.is_atacking=True
+                a.objetive=2
         for a in All_enemies2:
-            if a.coldownWeb==0:
+            if a.coldownWeb==0 and a.objetive==1:
                 B=Bullets_enemies2(img_adds2)
                 B.rect.x=a.rect.x
                 B.rect.y=a.rect.y
                 B.objetivo_x=player1.rect.x
                 B.objetivo_y=player1.rect.y
+                all_elements.add(B)
+                bullets_enemies2.add(B)
+                a.coldownWeb=100
+            if a.coldownWeb==0 and a.objetive==2:
+                B=Bullets_enemies2(img_adds2)
+                B.rect.x=a.rect.x
+                B.rect.y=a.rect.y
+                B.objetivo_x=player2.rect.x
+                B.objetivo_y=player2.rect.y
                 all_elements.add(B)
                 bullets_enemies2.add(B)
                 a.coldownWeb=100
@@ -842,5 +865,6 @@ def main ():
         screen.blit(text2,[40,10])
         windows.show()
         clock.tick(20)
+        #changes
 
 main()
