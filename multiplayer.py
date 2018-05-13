@@ -1,7 +1,8 @@
 import pygame
-from Windows import windows,functions
-from Windows import cut
-from Windows.objects import Player1 , Bullets , Enemys
+from Windows import windows,functions,cut
+from enemies.enemy import *
+from  bullets.bullet import *
+from players.player import *
 import ConfigParser
 import random
 r=lambda: random.randint(0,30)
@@ -39,300 +40,6 @@ class Background (pygame.sprite.Sprite):
     def update (self):
         pass
 
-class TANK (Player1):
-    def __init__ (self,m):
-        Player1.__init__(self,m)
-        self.salud=50
-    def update (self):
-        if self.is_run:
-
-            if self.move<3 and not self.is_k_up:
-                self.move+=1
-            else:
-                self.move=0
-
-            if self.time>0:
-                self.time-=1
-            else:
-                self.time=5
-
-
-        if  self.coldown >0:
-            self.coldown-=1
-        if self.is_angel and self.time_angel > 0:
-            self.time_angel-=1
-
-        if not self.RIGHT :
-            self.vel_x=0
-            self.is_run=False
-        if not self.LEFT :
-            self.vel_x=0
-            self.is_run=False
-        if not self.UP :
-            self.vel_y=0
-            self.is_run=False
-        if not self.DOWN :
-            self.vel_y=0
-            self.is_run=False
-
-        if self.UP:
-            self.vel_y=-VELOCIDAD
-            self.vel_x=0
-            self.action=3
-            self.is_run=True
-
-        if self.DOWN:
-            self.vel_y=VELOCIDAD
-            self.vel_x=0
-            self.action=0
-            self.is_run=True
-
-        if self.LEFT:
-            self.vel_x=-VELOCIDAD
-            self.vel_y=0
-            self.action=1
-            self.is_run=True
-        if self.RIGHT :
-            self.vel_x=VELOCIDAD
-            self.vel_y=0
-            self.action=2
-            self.is_run=True
-        self.rect.x+=self.vel_x
-        self.rect.y+=self.vel_y
-        self.image=self.m[self.action][self.move]
-
-
-
-
-class HEALER (Player1):
-    def __init__ (self,m):
-        Player1.__init__(self,m)
-        self.salud=50
-    def update (self):
-        if self.is_run:
-
-            if self.move<3 and not self.is_k_up:
-                self.move+=1
-            else:
-                self.move=0
-
-            if self.time>0:
-                self.time-=1
-            else:
-                self.time=5
-
-
-        if  self.coldown >0:
-            self.coldown-=1
-        if self.is_angel and self.time_angel > 0:
-            self.time_angel-=1
-
-        if not self.RIGHT :
-            self.vel_x=0
-            self.is_run=False
-        if not self.LEFT :
-            self.vel_x=0
-            self.is_run=False
-        if not self.UP :
-            self.vel_y=0
-            self.is_run=False
-        if not self.DOWN :
-            self.vel_y=0
-            self.is_run=False
-
-        if self.UP:
-            self.vel_y=-VELOCIDAD
-            self.vel_x=0
-            self.action=3
-            self.is_run=True
-
-        if self.DOWN:
-            self.vel_y=VELOCIDAD
-            self.vel_x=0
-            self.action=0
-            self.is_run=True
-
-        if self.LEFT:
-            self.vel_x=-VELOCIDAD
-            self.vel_y=0
-            self.action=1
-            self.is_run=True
-        if self.RIGHT :
-            self.vel_x=VELOCIDAD
-            self.vel_y=0
-            self.action=2
-            self.is_run=True
-        self.rect.x+=self.vel_x
-        self.rect.y+=self.vel_y
-        self.image=self.m[self.action][self.move]
-
-class Bullet_player (Bullets):
-    def __init__(self,m):
-        Bullets.__init__(self,m)
-        self.time=0
-    def update (self):
-        self.rect.x+=self.vel_x
-        self.rect.y+=self.vel_y
-
-class DPS (Player1):
-    def __init__ (self):
-        pass
-    def update (self):
-        pass
-
-class enemies(Enemys):
-    def __init__(self,m,x,y):
-        Enemys.__init__ (self,m)
-        self.rect.x=x
-        self.rect.y=y
-        self.salud=100
-    def update (self):
-        if self.vel_x>0:
-            self.action=2
-        if self.vel_x<0:
-            self.action=1
-        if self.vel_y<0:
-            self.action=3
-        if self.vel_y>0:
-            self.action=0
-        if self.move <3:
-            self.move+=1
-        else :
-            self.move=0
-        self.rect.x+=self.vel_x
-        self.rect.y+=self.vel_y
-        self.image=self.m[self.action][self.move]
-
-class enemies2 (Enemys):
-    def __init__(self,m,x,y):
-        Enemys.__init__(self,m)
-        self.rect.x=x
-        self.rect.y=y
-        self.salud=40
-        self.objetivoX=0
-        self.objetivoY=0
-        self.vel_y=1
-        self.coldownWeb=1
-        self.objetivo_x=0
-        self.objetivo_y=0
-        self.salud=100
-        self.vel_y=-2
-    def update (self):
-        if self.is_atacking:
-            if self.coldownWeb>0:
-                self.coldownWeb-=1
-        if self.vel_x>0:
-            self.action=2
-        if self.vel_x<0:
-            self.action=1
-        if self.vel_y<0:
-            self.action=3
-        if self.vel_y>0:
-            self.action=0
-        if self.move <3:
-            self.move+=1
-        else :
-            self.move=0
-        self.rect.x+=self.vel_x
-        self.rect.y+=self.vel_y
-        self.image=self.m[self.action][self.move]
-
-class Miniboss(Enemys):
-    def __init__(self,m,x,y):
-        Enemys.__init__(self,m)
-        self.rect.x=x
-        self.rect.y=y
-        self.objetivoX=0
-        self.objetivoY=0
-        self.vel_y=1
-        self.salud=500
-        self.is_atacking=False
-        self.coldownWeb=1
-        self.coldownAdds=1
-        self.is_die=False
-    def update (self):
-
-        if self.is_atacking:
-            if self.vel_x>0:
-                self.action=2
-            if self.vel_x<0:
-                self.action=1
-            if self.vel_y<0:
-                self.action=3
-            if self.vel_y>0:
-                self.action=0
-            if self.move <3:
-                self.move+=1
-            else :
-                self.move=0
-            if self.coldownAdds > 0:
-                self.coldownAdds-=1
-            if self.coldownWeb > 0:
-                self.coldownWeb-=1
-            self.rect.x+=self.vel_x
-            self.rect.y+=self.vel_y
-            self.image=self.m[self.action][self.move]
-
-class Bullets_spider(Bullets):
-    def __init__ (self,m):
-        Bullets.__init__(self,m)
-        self.objetivo_x=0
-        self.objetivo_y=0
-    def update (self):
-        if self.rect.x > self.objetivo_x:
-            self.vel_x=-10
-        if self.rect.x < self.objetivo_x:
-            self.vel_x=10
-        if self.rect.y < self.objetivo_y:
-            self.vel_y=10
-        if self.rect.y > self.objetivo_y:
-            self.vel_y=-10
-        self.rect.x+=self.vel_x
-        self.rect.y+=self.vel_y
-
-class Bullets_enemies2(Bullets):
-    def __init__ (self,m):
-        Bullets.__init__(self,m)
-        self.objetivo_x=0
-        self.objetivo_y=0
-    def update (self):
-        if self.rect.x > self.objetivo_x:
-            self.vel_x=-10
-        if self.rect.x < self.objetivo_x:
-            self.vel_x=10
-        if self.rect.y < self.objetivo_y:
-            self.vel_y=10
-        if self.rect.y > self.objetivo_y:
-            self.vel_y=-10
-        self.rect.x+=self.vel_x
-        self.rect.y+=self.vel_y
-
-class adds_miniboss (Enemys):
-    def __init__(self,m,x,y):
-        Enemys.__init__(self,m)
-        self.rect.x=x
-        self.rect.y=y
-    def update (self):
-            if self.vel_x>0:
-                self.action=2
-            if self.vel_x<0:
-                self.action=1
-            if self.vel_y<0:
-                self.action=3
-            if self.vel_y>0:
-                self.action=0
-            if self.move <2:
-                self.move+=1
-            else:
-                self.move=0
-            self.rect.x+=self.vel_x
-            self.rect.y+=self.vel_y
-            self.image=self.m[self.action][self.move]
-
-
-
-
-
 def main ():
     game_over=False
     while not game_over:
@@ -360,26 +67,25 @@ def main ():
                         close=True
         #read map and info of file extern
         inter=ConfigParser.ConfigParser()
-        inter.read('mapa.map')
+        inter.read('Maps/mapa.map')
         img=windows.Create_images('terrenogen.png')
         _map=inter.get('nivel','mapa')
         _Maps=_map.split('\n')
         M1=cut.insert_in_matrix(img,32,12)
         #finish read
         #start images
-        img1=windows.Create_images('Player1.png')
-        img2=windows.Create_images('posiblepersonaje.png')
-        img2angel=windows.Create_images('angelhealer.png')
-        img_bullet_haler=windows.Create_images('spell_basic.png')
-        img_e=windows.Create_images('adds2.png')
-        img_e2=windows.Create_images('adds5.png')
-        img_Boss=windows.Create_images('bossmedium.png')
-        img1angel=windows.Create_images('angeldps.png')
-        img_bullet_A=windows.Create_images('spell.png')
-        imgSkill=windows.Create_images('SkillMiniboss.png')
-        img3miniadds=windows.Create_images('image2.png')
-        img_adds2=windows.Create_images('spellsAdds2.png')
-        adds_Mbossimg=windows.Create_images('ghost.png')
+        img1=windows.Create_images('sprites_characters/Player1.png')
+        img2=windows.Create_images('sprites_characters/posiblepersonaje.png')
+        img2angel=windows.Create_images('sprites_characters/angelhealer.png')
+        img_bullet_haler=windows.Create_images('sprites_characters/spell_basic.png')
+        img_e=windows.Create_images('sprites_enemies/adds2.png')
+        img_e2=windows.Create_images('sprites_enemies/adds5.png')
+        img_Boss=windows.Create_images('sprites_enemies/bossmedium.png')
+        img1angel=windows.Create_images('sprites_characters/angeldps.png')
+        img_bullet_A=windows.Create_images('sprites_characters/spell.png')
+        imgSkill=windows.Create_images('sprites_enemies/SkillMiniboss.png')
+        img_adds2=windows.Create_images('sprites_enemies/spellsAdds2.png')
+        adds_Mbossimg=windows.Create_images('sprites_enemies/ghost.png')
         #finish images
         #Cut images
         m2MBoss=cut.insert_in_matrix(adds_Mbossimg,4,4)
@@ -390,7 +96,6 @@ def main ():
         e1=cut.insert_in_matrix(img_e,4,4)
         e2=cut.insert_in_matrix(img_e2,4,4)
         boss1=cut.insert_in_matrix(img_Boss,4,4)
-        Miniadds=cut.insert_in_matrix(img3miniadds,3,4)
         #finish cuting images
         #create objects
         player1=HEALER(m1)
