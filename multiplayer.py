@@ -48,8 +48,7 @@ def main ():
         #screen for gane
         screen=windows.Create_screen(SIZE_SCREEN)
         close=False
-
-
+        #choose menu
         while not Menu:
             functions.Menu(screen)
             windows.show()
@@ -66,11 +65,13 @@ def main ():
                         game_over=True
                         close=True
         #read map and info of file extern
-        inter=ConfigParser.ConfigParser()
-        inter.read('Maps/mapa.map')
+        # inter=ConfigParser.ConfigParser()
+        # inter.read('Maps/mapa.map')
+        #
+        # _map=inter.get('nivel','mapa')
+        # _Maps=_map.split('\n')
+        _Maps=functions.Read_Map('Maps/mapa.map','nivel','mapa')
         img=windows.Create_images('terrenogen.png')
-        _map=inter.get('nivel','mapa')
-        _Maps=_map.split('\n')
         M1=cut.insert_in_matrix(img,32,12)
         #finish read
         #start images
@@ -127,8 +128,7 @@ def main ():
         for i in range (len(_Maps)):
             x=0
             for m in _Maps[i]:
-                element_X=int(inter.get(m,'x'))
-                element_y=int (inter.get(m,'y'))
+                element_X,element_y=functions.Read_section('Maps/mapa.map',m)
                 B=Background(x,y,M1[element_y][element_X])
                 Background_elements.add(B)
                 x+=32
