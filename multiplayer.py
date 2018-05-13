@@ -336,11 +336,28 @@ class adds_miniboss (Enemys):
 def main ():
     game_over=False
     while not game_over:
-        n=0
+        Menu=False
         vidaP1=pygame.font.Font(None,32)
         #screen for gane
         screen=windows.Create_screen(SIZE_SCREEN)
         close=False
+
+
+        while not Menu:
+            functions.Menu(screen)
+            windows.show()
+            for events in pygame.event.get():
+                if events.type==pygame.QUIT:
+                    Menu=True
+                    game_over=True
+                    close=True
+                if events.type==pygame.KEYDOWN:
+                    if events.key==pygame.K_SPACE:
+                        Menu=True
+                    if events.key==pygame.K_ESCAPE:
+                        Menu=True
+                        game_over=True
+                        close=True
         #read map and info of file extern
         inter=ConfigParser.ConfigParser()
         inter.read('mapa.map')
@@ -396,6 +413,9 @@ def main ():
         players.add(player1)
         players.add(player2)
         clock=pygame.time.Clock()
+        pygame.mixer.init()
+        SpellHeal=pygame.mixer.Sound('healspell1.ogg')
+        SpellDps=pygame.mixer.Sound('spell.wav')
         x=0
         y=0
         #ciclo para la lectura del mapa
@@ -493,6 +513,7 @@ def main ():
                             if  player1.action==3:
                                 bullet_H.vel_y=-10
                                 bullet_H.vel_x=0
+                            SpellDps.play()
                     if events.key==pygame.K_9:
                         player1.is_run=True
                         if player1.time==0:
@@ -549,12 +570,14 @@ def main ():
                                 player1.salud+=15
                             else:
                                 player1.salud+=5
+                            SpellHeal.play()
                     if events.key==pygame.K_2:
                         if player2.salud < 80:
                             if player2.is_angel:
                                 player2.salud+=15
                             else:
                                 player2.salud+=5
+                            SpellHeal.play()
                     if events.key==pygame.K_3:
                         if player2.salud<80 and player1.salud < 100:
                             if player2.is_angel:
@@ -563,6 +586,7 @@ def main ():
                             else:
                                 player2.salud+=3
                                 player1.salud+=3
+                            SpellHeal.play()
                 if events.type == pygame.KEYUP:
                     if events.key==pygame.K_UP:
                         player1.UP=False
