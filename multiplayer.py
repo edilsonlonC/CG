@@ -3,6 +3,9 @@ from Windows import windows,functions
 from Windows import cut
 from Windows.objects import Player1 , Bullets , Enemys
 import ConfigParser
+import random
+r=lambda: random.randint(0,30)
+
 SIZE_SCREEN=[700,500]
 VELOCIDAD=5
 pygame.init()
@@ -359,8 +362,10 @@ def main ():
         imgSkill=windows.Create_images('SkillMiniboss.png')
         img3miniadds=windows.Create_images('image2.png')
         img_adds2=windows.Create_images('spellsAdds2.png')
+        adds_Mbossimg=windows.Create_images('ghost.png')
         #finish images
         #Cut images
+        m2MBoss=cut.insert_in_matrix(adds_Mbossimg,4,4)
         m1=cut.insert_in_matrix(img1,4,4)
         m2=cut.insert_in_matrix(img2,4,4)
         m2Angel=cut.insert_in_matrix(img2angel,4,4)
@@ -385,6 +390,7 @@ def main ():
         walls=pygame.sprite.Group()
         All_enemies2=pygame.sprite.Group()
         All_enemies=pygame.sprite.Group()
+        miniAdds=pygame.sprite.Group()
         all_elements.add(player1)
         all_elements.add(player2)
         players.add(player1)
@@ -412,7 +418,6 @@ def main ():
                     en=enemies2(e2,x,y)
                     all_elements.add(en)
                     All_enemies2.add(en)
-
                     Background_elements.add(en)
                 if m=='X':#miniboss
                     en=Miniboss(boss1,x,y)
@@ -493,6 +498,8 @@ def main ():
                         if player1.time==0:
                             if not player1.is_angel:
                                 img_bullet_healer=img_bullet_haler
+                            else:
+                                img_bullet_healer=img_bullet_A
                             bullet_H=Bullet_player(img_bullet_healer)
                             all_elements.add(bullet_H)
                             bullets.add(bullet_H)
@@ -709,18 +716,23 @@ def main ():
             for P in players:
                 Col_P_B=pygame.sprite.spritecollide(P,BulletsSpider,True)
                 for COl in Col_P_B:
-                    P.salud-=20
+                    P.salud-=50
             for P in players:
                 Col_P_E=pygame.sprite.spritecollide(P,All_enemies2,True)
                 for Col in Col_P_E:
                     P.salud-=1000
                 if P.salud<=0:
                     close=True
+
             #removiendo balas
             for B in bullets:
                 if B.rect.x <= 0 or B.rect.x > SIZE_SCREEN[0] or B.rect.y <= 0 or B.rect.y > SIZE_SCREEN[1]:
                     bullets.remove(B)
                     all_elements.remove(B)
+
+            col_miniadds=pygame.sprite.spritecollide(player1,miniAdds,True)
+            for Col in col_miniadds:
+                player1.salud-=15
 
             #enemigos
             for a in All_enemies:
@@ -842,6 +854,10 @@ def main ():
                         player1.rect.x-=30
                     if player2.rect.x > SIZE_SCREEN[0]:
                         player2.rect.x-=30
+                    if player1.rect.x <= 0:
+                        player1.rect.x+=30
+                    if player2.rect.x <=0:
+                        player2.rect.x+=30
             if player1.combat:
                 if player1.rect.x >= SIZE_SCREEN[0]:
                     player1.rect.x-=30
@@ -850,7 +866,7 @@ def main ():
                 player1.combat=False
 
 
-            #movimiento e los adds
+            #movimiento de los adds
             for e in All_enemies:
                 if functions.Range_enemy(e.rect.x,e.rect.y,player2.rect.x,player2.rect.y,100):
                     e.is_atacking=True
@@ -880,21 +896,43 @@ def main ():
             for a in All_Bosses:
                 if functions.Range_enemy(a.rect.x,a.rect.y,player1.rect.x,player1.rect.y,100):
                     a.is_atacking=True
+            #boss medium
             for Boss in All_Bosses:
                 if Boss.coldownWeb==0:
                     B=Bullets_spider(imgSkill)
                     B.rect.x=Boss.rect.x
                     B.rect.y=Boss.rect.y
-                    B.objetivo_x=player1.rect.x
-                    B.objetivo_y=player1.rect.y
+                    B.objetivo_x=player2.rect.x
+                    B.objetivo_y=player2.rect.y
                     all_elements.add(B)
                     BulletsSpider.add(B)
-                    Boss.coldownWeb=1000
+                    Boss.coldownWeb=500
+                if Boss.coldownAdds==0:
+                    i=0
+                    for j in range (5):
+                        M=adds_miniboss(m2MBoss,Boss.rect.x+i,Boss.rect.y+i)
+                        all_elements.add(M)
+                        miniAdds.add(M)
+                        i+=r()
+                    Boss.coldownAdds=300
+            for a in miniAdds:
+                if player1.rect.x < a.rect.x:
+                    a.vel_x=-5
+                if player1.rect.x > a.rect.x:
+                    a.vel_x=5
+                if player1.rect.y < a.rect.y:
+                    a.vel_y=-5
+                if player1.rect.y > a.rect.y:
+                    a.vel_y=5
+
+
             for boss in All_Bosses:
                 if boss.is_die:
                     for B in BulletsSpider:
                         BulletsSpider.remove(B)
                         all_elements.remove(B)
+                        close=True
+                        game_over=True
             for a in All_enemies2:
                 if functions.Range_enemy(a.rect.x,a.rect.y,player1.rect.x,player1.rect.y,100):
                     a.is_atacking=True
@@ -927,17 +965,20 @@ def main ():
             salud_player2="Player2 " + str(player2.salud)
             text=vidaP1.render(salud_player1,False,[255,255,255])
             text2=vidaP1.render(salud_player2,False,[255,255,255])
-
+            Name1=vidaP1.render("El Brayan",False,[255,255,255])
+            Name2=vidaP1.render("La Yurany",False,[255,255,255])
 
             Background_elements.update()
             all_elements.update()
-            # All_enemies.update()
-            # All_enemies2.update()
+            All_enemies.update()
+            All_enemies2.update()
             windows.clear(screen)
             Background_elements.draw(screen)
             all_elements.draw(screen)
             screen.blit(text,[10,10])
             screen.blit(text2,[400,10])
+            screen.blit(Name1,[player1.rect.x,player1.rect.y-30])
+            screen.blit(Name2,[player2.rect.x,player2.rect.y-30])
             COLORp1=[255,255,255]
             COLORp2=[255,255,255]
             if player1.salud<30:
