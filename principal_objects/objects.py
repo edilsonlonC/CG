@@ -7,8 +7,8 @@ class Player1 (pygame.sprite.Sprite):
         self.move=0
         self.image=self.m[self.action][self.move]
         self.rect=self.image.get_rect()
-        self.rect.x=2108
-        self.rect.y=928
+        self.rect.x=60
+        self.rect.y=60
         self.vel_x=0
         self.vel_y=0
         self.is_k_up=False # pregiuntar si ha dejado de presionar teclas
@@ -43,3 +43,4 @@ class Enemies (pygame.sprite.Sprite):
         self.vel_y=0
         self.is_atacking=False
         self.objetive=0
+        self.ID=0

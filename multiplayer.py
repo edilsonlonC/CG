@@ -3,6 +3,7 @@ from Windows import windows,functions,cut
 from enemies.enemy import *
 from  bullets.bullet import *
 from players.player import *
+from Items.item import item
 import ConfigParser
 import random
 r=lambda: random.randint(0,255)
@@ -30,6 +31,7 @@ Cosas que faltan.
 
 
 """
+
 class Background (pygame.sprite.Sprite):
     def __init__(self,posx,posy,img):
         pygame.sprite.Sprite.__init__(self)
@@ -45,6 +47,7 @@ class Background (pygame.sprite.Sprite):
 def main ():
     game_over=False
     while not game_over:
+        CALACAS=0
         Menu=False
         vidaP1=pygame.font.Font(None,32)
         #screen for gane
@@ -89,6 +92,7 @@ def main ():
         imgSkill=windows.Create_images('sprites_enemies/SkillMiniboss.png')
         img_adds2=windows.Create_images('sprites_enemies/spellsAdds2.png')
         adds_Mbossimg=windows.Create_images('sprites_enemies/ghost.png')
+        img_item=windows.Create_images('Items/calaca.png')
         #finish images
         #Cut images
         m2MBoss=cut.insert_in_matrix(adds_Mbossimg,4,4)
@@ -105,6 +109,7 @@ def main ():
         player2=TANK(m2)
         #finisg objects
         #creating groups
+        all_items=pygame.sprite.Group()
         players=pygame.sprite.Group()
         bullets=pygame.sprite.Group()
         bullets_enemies2=pygame.sprite.Group()
@@ -134,6 +139,11 @@ def main ():
                 B=Background(x,y,M1[element_y][element_X])
                 Background_elements.add(B)
                 x+=32
+                if m=='O':
+                    i=item(img_item,x,y)
+                    all_elements.add(i)
+                    all_items.add(i)
+                    Background_elements.add(i)
                 if m=='#': # paredes
                     walls.add(B)
                 if m=='C': #enemigos de persecusion
@@ -149,7 +159,6 @@ def main ():
                 if m=='X':#miniboss
                     en=Miniboss(boss1,x,y)
                     all_elements.add(en)
-                    All_enemies2.add(en)
                     Background_elements.add(en)
                     All_Bosses.add(en)
 
@@ -325,6 +334,11 @@ def main ():
                 player2.is_angel=False
 
             #colisiones
+            #Items
+            for p in players:
+                col_item=pygame.sprite.spritecollide(p,all_items,True)
+                for Col in col_item:
+                    CALACAS+=1
             #paredes
             Col_Wall=pygame.sprite.spritecollide(player1,walls,False)
             for col in Col_Wall:
@@ -369,6 +383,7 @@ def main ():
                     if e.salud <= 0:
                         All_enemies.remove(e)
                         all_elements.remove(e)
+                        Background_elements.remove(e)
                     e.objetive=1
                 textEnemys=vidaP1.render(str(e.salud),False,[255,255,255])
                 screen.blit(textEnemys,[e.rect.x,e.rect.y])
@@ -395,20 +410,23 @@ def main ():
                     textEnemys=vidaP1.render(str(e.salud),False,[255,255,255])
                     screen.blit(textEnemys,[e.rect.x,e.rect.y])
                     windows.show()
+            #balas jugador y boss
             for a in All_Bosses:
                 Col_Bullet_Player=pygame.sprite.spritecollide(a,bullets,True)
                 for Col in Col_Bullet_Player:
-                    if a.salud <=0:
+                    if a.salud <=0 :
                         a.is_die=True
                         all_elements.remove(a)
                         All_enemies2.remove(a)
                         player1.combat=False
-                    elif player1.is_angel:
+                    elif player1.is_angel and CALACAS==3:
                         a.salud-=20
                         a.is_atacking=True
-                    else:
+                        All_enemies2.add(a)
+                    elif CALACAS==3:
                         a.salud-=10
                         a.is_atacking=True
+                        All_enemies2.add(a)
                 textEnemys=vidaP1.render(str(a.salud),False,[255,255,255])
                 screen.blit(textEnemys,[a.rect.x,a.rect.y])
                 windows.show()
@@ -529,7 +547,7 @@ def main ():
                     for  A in All_enemies2:
                         A.vel_y=1
                 if player2.rect.y >= SIZE_SCREEN[1] and player1.rect.y >= SIZE_SCREEN[1]:
-                    for i in range(200):
+                    for i in range(500):
 
 
                         for B in Background_elements:
@@ -557,7 +575,7 @@ def main ():
                     for  A in All_enemies2:
                         A.vel_y=1
                 if player2.rect.y <= 0 and player1.rect.y <= 0:
-                    for i in range(200):
+                    for i in range(500):
                         for B in Background_elements:
                             B.rect.y+=1
                         for A in All_enemies2:
@@ -594,8 +612,12 @@ def main ():
             if player1.combat:
                 if player1.rect.x >= SIZE_SCREEN[0]:
                     player1.rect.x-=30
-                if player2.rect.x > SIZE_SCREEN[0]:
+                if player2.rect.x >= SIZE_SCREEN[0]:
                     player2.rect.x-=30
+                if player1.rect.y >= SIZE_SCREEN[1]:
+                    player1.rect.y-=30
+                if player2.rect.y >= SIZE_SCREEN[1]:
+                    player2.rect.y-=30
                 player1.combat=False
 
 
@@ -627,8 +649,9 @@ def main ():
                     if player1.rect.y > e.rect.y:
                         e.vel_y=1
             for a in All_Bosses:
-                if functions.Range_enemy(a.rect.x,a.rect.y,player1.rect.x,player1.rect.y,100):
+                if functions.Range_enemy(a.rect.x,a.rect.y,player1.rect.x,player1.rect.y,100) and CALACAS==3:
                     a.is_atacking=True
+
             #boss medium
             for Boss in All_Bosses:
                 if Boss.coldownWeb==0:
@@ -682,7 +705,7 @@ def main ():
                         BulletsSpider.remove(B)
                         all_elements.remove(B)
                     close=True
-        
+
             for a in All_enemies2:
                 if functions.Range_enemy(a.rect.x,a.rect.y,player1.rect.x,player1.rect.y,100):
                     a.is_atacking=True
@@ -708,15 +731,17 @@ def main ():
                     bullets_enemies2.add(B)
                     a.coldownWeb=100
             for B in bullets_enemies2:
-                if functions.Range_enemy(B.rect.x,B.rect.y,B.objetivo_x,B.objetivo_y,30):
+                if functions.Range_enemy(B.rect.x,B.rect.y,B.objetivo_x,B.objetivo_y,10):
                     bullets_enemies2.remove(B)
                     all_elements.remove(B)
             salud_player1="Player1 " + str(player1.salud)
             salud_player2="Player2 " + str(player2.salud)
+            Calaveras="Calaveras : " + str(CALACAS)
             text=vidaP1.render(salud_player1,False,[255,255,255])
             text2=vidaP1.render(salud_player2,False,[255,255,255])
             Name1=vidaP1.render("El Brayan",False,[255,255,255])
             Name2=vidaP1.render("La Yurany",False,[255,255,255])
+            Calaveras=vidaP1.render(Calaveras,False,[255,255,255])
 
             Background_elements.update()
             all_elements.update()
@@ -729,6 +754,7 @@ def main ():
             screen.blit(text2,[400,10])
             screen.blit(Name1,[player1.rect.x,player1.rect.y-30])
             screen.blit(Name2,[player2.rect.x,player2.rect.y-30])
+            screen.blit(Calaveras,[SIZE_SCREEN[0]/2,40])
             COLORp1=[255,255,255]
             COLORp2=[255,255,255]
             if player1.salud<30:
