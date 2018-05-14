@@ -3,7 +3,7 @@ VELOCIDAD=5
 class TANK (Player1):
     def __init__ (self,m):
         Player1.__init__(self,m)
-        self.salud=50
+        self.salud=80
     def update (self):
         if self.is_run:
 
@@ -64,7 +64,7 @@ class TANK (Player1):
 class HEALER (Player1):
     def __init__ (self,m):
         Player1.__init__(self,m)
-        self.salud=50
+        self.salud=100
     def update (self):
         if self.is_run:
 

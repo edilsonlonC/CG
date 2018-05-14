@@ -49,7 +49,7 @@ def main ():
     game_over=False
     win=False
     while not game_over:
-        CALACAS=3
+        CALACAS=0
         Menu=False
         vidaP1=pygame.font.Font(None,32)
         #screen for gane
@@ -764,8 +764,8 @@ def main ():
             Calaveras="Calaveras : " + str(CALACAS)
             text=vidaP1.render(salud_player1,False,[255,255,255])
             text2=vidaP1.render(salud_player2,False,[255,255,255])
-            Name1=vidaP1.render("El Brayan",False,[255,255,255])
-            Name2=vidaP1.render("La Yurany",False,[255,255,255])
+            Name1=vidaP1.render("Kalcicko",False,[255,255,255])
+            Name2=vidaP1.render("Kasandra",False,[255,255,255])
             Calaveras=vidaP1.render(Calaveras,False,[255,255,255])
 
             Background_elements.update()
