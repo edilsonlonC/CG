@@ -243,16 +243,16 @@ def main ():
                             bullet_H.rect.y=player1.rect.y
                             if  player1.action==0:
                                 bullet_H.vel_y=10
-                                bullet_H.vel_x=10
+                                bullet_H.vel_x=2
                             if  player1.action==1:
                                 bullet_H.vel_x=-10
-                                bullet_H.vel_y=10
+                                bullet_H.vel_y=2
                             if  player1.action==2:
                                 bullet_H.vel_x=10
-                                bullet_H.vel_y=-10
+                                bullet_H.vel_y=-2
                             if  player1.action==3:
                                 bullet_H.vel_y=-10
-                                bullet_H.vel_x=-10
+                                bullet_H.vel_x=-2
                     if events.key==pygame.K_0:
                         player1.is_run=True
                         if player1.time==0:
@@ -265,16 +265,16 @@ def main ():
                             bullet_H.rect.y=player1.rect.y
                             if  player1.action==0:
                                 bullet_H.vel_y=10
-                                bullet_H.vel_x=-10
+                                bullet_H.vel_x=-2
                             if  player1.action==1:
                                 bullet_H.vel_x=-10
-                                bullet_H.vel_y=-10
+                                bullet_H.vel_y=-2
                             if  player1.action==2:
                                 bullet_H.vel_x=10
-                                bullet_H.vel_y=10
+                                bullet_H.vel_y=2
                             if  player1.action==3:
                                 bullet_H.vel_y=-10
-                                bullet_H.vel_x=10
+                                bullet_H.vel_x=2
 
                     if events.key==pygame.K_1:
                         if player1.salud < 100:
@@ -619,6 +619,14 @@ def main ():
                     player1.rect.y-=30
                 if player2.rect.y >= SIZE_SCREEN[1]:
                     player2.rect.y-=30
+                if player1.rect.x < 0:
+                    player1.rect.x-=30
+                if player2.rect.x < 0:
+                    player2.rect.x-=30
+                if player1.rect.y < 0:
+                    player1.rect.y+=30
+                if player2.rect.y < 0:
+                    player2.rect.y+=30
                 player1.combat=False
 
 
