@@ -47,8 +47,9 @@ class Background (pygame.sprite.Sprite):
 
 def main ():
     game_over=False
+    win=False
     while not game_over:
-        CALACAS=0
+        CALACAS=3
         Menu=False
         vidaP1=pygame.font.Font(None,32)
         #screen for gane
@@ -56,7 +57,7 @@ def main ():
         close=False
         #choose menu
         while not Menu:
-            functions.Menu(screen)
+            functions.Menu(screen,win)
             windows.show()
             for events in pygame.event.get():
                 if events.type==pygame.QUIT:
@@ -166,6 +167,7 @@ def main ():
 
             y+=32
         while not close:
+            win=False
             for events in pygame.event.get():
                 if events.type==pygame.QUIT:
                     close=True
@@ -283,12 +285,16 @@ def main ():
                             else:
                                 player1.salud+=5
                             SpellHeal.play()
+                            if player1.salud > 100:
+                                player1.salud=100
                     if events.key==pygame.K_2:
                         if player2.salud < 80:
                             if player2.is_angel:
                                 player2.salud+=15
                             else:
                                 player2.salud+=5
+                            if player2.salud > 80:
+                                player2.salud=80
                             SpellHeal.play()
                     if events.key==pygame.K_3:
                         if player2.salud<80 and player1.salud < 100:
@@ -419,6 +425,7 @@ def main ():
                         a.is_die=True
                         all_elements.remove(a)
                         All_enemies2.remove(a)
+                        Background_elements.remove(a)
                         player1.combat=False
                     elif player1.is_angel and CALACAS==3:
                         a.salud-=20
@@ -435,7 +442,7 @@ def main ():
             for p in players:
                 Col_E_P=pygame.sprite.spritecollide(p,All_enemies,True)
                 for Col in Col_E_P:
-                    p.salud-=25
+                    p.salud-=30
             #balas paredes
             for w in walls:
                 Col_B_W=pygame.sprite.spritecollide(w,bullets,True)
@@ -713,6 +720,7 @@ def main ():
                     for B in BulletsSpider:
                         BulletsSpider.remove(B)
                         all_elements.remove(B)
+                    win=True
                     close=True
 
             for a in All_enemies2:

@@ -5,7 +5,7 @@ class enemies(Enemies):
         Enemies.__init__ (self,m)
         self.rect.x=x
         self.rect.y=y
-        self.salud=10
+        self.salud=20
         self.ID=0
     def update (self):
         if self.vel_x>0:
