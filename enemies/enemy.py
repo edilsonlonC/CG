@@ -98,10 +98,12 @@ class Miniboss(Enemies):
 
 
 class adds_miniboss (Enemies):
-    def __init__(self,m,x,y):
+    def __init__(self,m,x,y,ID):
         Enemies.__init__(self,m)
         self.rect.x=x
         self.rect.y=y
+        self.salud=-20
+        self.ID=ID
     def update (self):
             if self.vel_x>0:
                 self.action=2

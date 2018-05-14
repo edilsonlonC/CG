@@ -5,7 +5,9 @@ from  bullets.bullet import *
 from players.player import *
 import ConfigParser
 import random
-r=lambda: random.randint(0,30)
+r=lambda: random.randint(0,255)
+rx=lambda: random.randint(0,700)
+ry=lambda: random.randint(0,400)
 
 SIZE_SCREEN=[700,500]
 VELOCIDAD=5
@@ -122,7 +124,7 @@ def main ():
         pygame.mixer.init()
         SpellHeal=pygame.mixer.Sound('healspell1.ogg')
         SpellDps=pygame.mixer.Sound('spell.wav')
-        x=0
+        x=0#incremento de posiciones
         y=0
         #ciclo para la lectura del mapa
         for i in range (len(_Maps)):
@@ -158,8 +160,6 @@ def main ():
                 if events.type==pygame.QUIT:
                     close=True
                     game_over=True
-
-
             #comportamiento de los jugadores
                 if events.type==pygame.KEYDOWN:
                     if events.key==pygame.K_UP:
@@ -265,9 +265,6 @@ def main ():
                             if  player1.action==3:
                                 bullet_H.vel_y=-10
                                 bullet_H.vel_x=10
-
-
-
 
                     if events.key==pygame.K_1:
                         if player1.salud < 100:
@@ -458,11 +455,18 @@ def main ():
                 if B.rect.x <= 0 or B.rect.x > SIZE_SCREEN[0] or B.rect.y <= 0 or B.rect.y > SIZE_SCREEN[1]:
                     bullets.remove(B)
                     all_elements.remove(B)
-
-            col_miniadds=pygame.sprite.spritecollide(player1,miniAdds,True)
-            for Col in col_miniadds:
-                player1.salud-=15
-
+            for p in players:
+                col_miniadds=pygame.sprite.spritecollide(p,miniAdds,True)
+                for Col in col_miniadds:
+                    p.salud-=15
+            for mini in miniAdds:
+                col_B_miniadds=pygame.sprite.spritecollide(mini,bullets,True)
+                for Col in col_B_miniadds:
+                    if mini.salud > 0:
+                        mini.salud-=10
+                    else:
+                        all_elements.remove(mini)
+                        miniAdds.remove(mini)
             #enemigos
             for a in All_enemies:
                 if a.is_atacking:
@@ -635,24 +639,41 @@ def main ():
                     B.objetivo_y=player2.rect.y
                     all_elements.add(B)
                     BulletsSpider.add(B)
+                    B=Bullets_spider(imgSkill)
+                    B.rect.x=Boss.rect.x
+                    B.rect.y=Boss.rect.y
+                    B.objetivo_x=player1.rect.x
+                    B.objetivo_y=player1.rect.y
+                    all_elements.add(B)
+                    BulletsSpider.add(B)
                     Boss.coldownWeb=500
                 if Boss.coldownAdds==0:
                     i=0
-                    for j in range (5):
-                        M=adds_miniboss(m2MBoss,Boss.rect.x+i,Boss.rect.y+i)
+                    for j in range (10):
+                        M=adds_miniboss(m2MBoss,rx(),ry(),i)
                         all_elements.add(M)
                         miniAdds.add(M)
-                        i+=r()
-                    Boss.coldownAdds=300
+                        i+=1
+                    Boss.coldownAdds=500
             for a in miniAdds:
-                if player1.rect.x < a.rect.x:
-                    a.vel_x=-5
-                if player1.rect.x > a.rect.x:
-                    a.vel_x=5
-                if player1.rect.y < a.rect.y:
-                    a.vel_y=-5
-                if player1.rect.y > a.rect.y:
-                    a.vel_y=5
+                if a.ID % 2 == 0:
+                    if player1.rect.x < a.rect.x:
+                        a.vel_x=-5
+                    if player1.rect.x > a.rect.x:
+                        a.vel_x=5
+                    if player1.rect.y < a.rect.y:
+                        a.vel_y=-5
+                    if player1.rect.y > a.rect.y:
+                        a.vel_y=5
+                else:
+                    if player2.rect.x < a.rect.x:
+                        a.vel_x=-5
+                    if player2.rect.x > a.rect.x:
+                        a.vel_x=5
+                    if player2.rect.y < a.rect.y:
+                        a.vel_y=-5
+                    if player2.rect.y > a.rect.y:
+                        a.vel_y=5
 
 
             for boss in All_Bosses:
@@ -660,8 +681,8 @@ def main ():
                     for B in BulletsSpider:
                         BulletsSpider.remove(B)
                         all_elements.remove(B)
-                        close=True
-                        game_over=True
+                    close=True
+        
             for a in All_enemies2:
                 if functions.Range_enemy(a.rect.x,a.rect.y,player1.rect.x,player1.rect.y,100):
                     a.is_atacking=True
