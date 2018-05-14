@@ -9,6 +9,7 @@ import random
 r=lambda: random.randint(0,255)
 rx=lambda: random.randint(0,700)
 ry=lambda: random.randint(0,400)
+robjetive=lambda: random.randint(1,2)
 
 SIZE_SCREEN=[700,500]
 VELOCIDAD=5
@@ -434,7 +435,7 @@ def main ():
             for p in players:
                 Col_E_P=pygame.sprite.spritecollide(p,All_enemies,True)
                 for Col in Col_E_P:
-                    p.salud-=50
+                    p.salud-=25
             #balas paredes
             for w in walls:
                 Col_B_W=pygame.sprite.spritecollide(w,bullets,True)
@@ -729,7 +730,15 @@ def main ():
                     B.objetivo_y=player2.rect.y
                     all_elements.add(B)
                     bullets_enemies2.add(B)
-                    a.coldownWeb=100
+                    a.coldownWeb=300
+                if a.coldownAdds==0:
+                    for i in range(6):
+                        en=enemies(e1,rx(),ry())
+                        en.is_atacking=True
+                        en.objetive=robjetive() # modidicador de objetivo
+                        all_elements.add(en)
+                        All_enemies.add(en)
+                        a.coldownAdds=500
             for B in bullets_enemies2:
                 if functions.Range_enemy(B.rect.x,B.rect.y,B.objetivo_x,B.objetivo_y,10):
                     bullets_enemies2.remove(B)
@@ -755,11 +764,11 @@ def main ():
             screen.blit(Name1,[player1.rect.x,player1.rect.y-30])
             screen.blit(Name2,[player2.rect.x,player2.rect.y-30])
             screen.blit(Calaveras,[SIZE_SCREEN[0]/2,40])
-            COLORp1=[255,255,255]
-            COLORp2=[255,255,255]
+            COLORp1=[155,0,0]
+            COLORp2=[155,0,0]
             if player1.salud<30:
                 COLORp1=[255,0,0]
-            if player2.salud<30:
+            if player2.salud<50:
                 COLORp2=[255,0,0]
             pygame.draw.line(screen,COLORp1,[player1.rect.x,player1.rect.y-5],[player1.rect.x+player1.salud,player1.rect.y-5],10)
             pygame.draw.line(screen,COLORp2,[player2.rect.x,player2.rect.y-5],[player2.rect.x+player2.salud,player2.rect.y-5],10)

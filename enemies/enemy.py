@@ -5,7 +5,8 @@ class enemies(Enemies):
         Enemies.__init__ (self,m)
         self.rect.x=x
         self.rect.y=y
-        self.salud=100
+        self.salud=10
+        self.ID=0
     def update (self):
         if self.vel_x>0:
             self.action=2
@@ -35,12 +36,15 @@ class enemies2 (Enemies):
         self.coldownWeb=1
         self.objetivo_x=0
         self.objetivo_y=0
-        self.salud=100
+        self.salud=50
         self.vel_y=-2
+        self.coldownAdds=1
     def update (self):
         if self.is_atacking:
             if self.coldownWeb>0:
                 self.coldownWeb-=1
+            if self.coldownAdds>0:
+                self.coldownAdds-=1
         if self.vel_x>0:
             self.action=2
         if self.vel_x<0:
