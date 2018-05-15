@@ -599,10 +599,18 @@ def main ():
                         player1.rect.x-=30
                     if player2.rect.x > SIZE_SCREEN[0]:
                         player2.rect.x-=30
+                    if player1.rect.y >= SIZE_SCREEN[1]:
+                        player1.rect.y-=30
+                    if player2.rect.y > SIZE_SCREEN[1]:
+                        player2.rect.y-=30
                     if player1.rect.x <= 0:
                         player1.rect.x+=30
                     if player2.rect.x <=0:
                         player2.rect.x+=30
+                    if player1.rect.y <= 0:
+                        player1.rect.y+=30
+                    if player2.rect.y <=0:
+                        player2.rect.y+=30
             if player1.combat:
                 if player1.rect.x >= SIZE_SCREEN[0]:
                     player1.rect.x-=30
