@@ -14,25 +14,9 @@ robjetive=lambda: random.randint(1,2)
 SIZE_SCREEN=[700,500]
 VELOCIDAD=5
 pygame.init()
-"""
-Cosas que faltan.
-1) crear mapa completo (Falta aun)
-2) llenar los respectivos grupos con los elementos (ya)
-3) comportamiento de los enemigos (ya)
-4) crear coliciones:
-    balas_jugadores vs enemigos (realizado)
-    balas_enemigos vs jugadores (realizado)
-    muros vs enemigos y jugadores (realizado)
-    jugadores contra enemigos (realizado)
-5) crear miniboss y configurar comportamiento (realizado)
-6) crear boss final (en proceso)
-7) mejoras en aspectos del videojuego
-8) agregar los modificaores correspondientes (me faltan 2)
 
 
-
-"""
-
+# elementos del mapa
 class Background (pygame.sprite.Sprite):
     def __init__(self,posx,posy,img):
         pygame.sprite.Sprite.__init__(self)
@@ -49,7 +33,7 @@ def main ():
     game_over=False
     win=False
     while not game_over:
-        CALACAS=0
+        CALACAS=0 # calaveras
         Menu=False
         vidaP1=pygame.font.Font(None,32)
         #screen for gane
@@ -166,6 +150,7 @@ def main ():
 
 
             y+=32
+        # inicio del juego
         while not close:
             win=False
             for events in pygame.event.get():
@@ -500,8 +485,9 @@ def main ():
             for a in All_enemies2:
                 if a.is_atacking:
                     player1.combat=True
+
             #movimiento de la pantalla
-            if not player1.combat or not  player2.combat:
+            if not player1.combat  and not  player2.combat:
                 if player2.rect.x > SIZE_SCREEN[0] and player1.rect.x >SIZE_SCREEN[0] :
                     for i in range(700):
                         for B in Background_elements:
@@ -635,9 +621,10 @@ def main ():
                 if player2.rect.y < 0:
                     player2.rect.y+=30
                 player1.combat=False
+                player2.combat=False
 
 
-            #movimiento de los adds
+            #movimiento de los adds y comportamiento de los adda
             for e in All_enemies:
                 if functions.Range_enemy(e.rect.x,e.rect.y,player2.rect.x,player2.rect.y,100):
                     e.is_atacking=True
@@ -789,7 +776,7 @@ def main ():
             pygame.draw.line(screen,COLORp1,[player1.rect.x,player1.rect.y-5],[player1.rect.x+player1.salud,player1.rect.y-5],10)
             pygame.draw.line(screen,COLORp2,[player2.rect.x,player2.rect.y-5],[player2.rect.x+player2.salud,player2.rect.y-5],10)
             windows.show()
-            clock.tick(20)
+            #clock.tick(20)
             #changes
 
 main()
